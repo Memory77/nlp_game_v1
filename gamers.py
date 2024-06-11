@@ -18,7 +18,8 @@ class Gamer(pygame.sprite.Sprite):
         self.current_camembert = None
         self.lore = ""
         self.caracter = ""
-        
+        self.arme = None
+        self.original_image = self.image.copy()
     def set_position(self, row, col, cell_width, cell_height):
         # définit la position du sprite basée sur la position de la cellule du tableau
         self.rect.x = col * cell_width
@@ -185,6 +186,18 @@ class Gamer(pygame.sprite.Sprite):
                     sound_fall = pygame.mixer.Sound('sounds/fall.wav')
                     sound_fall.set_volume(0.2)
                     sound_fall.play()
+    
+    def additem(self, item):
+        self.arme = pygame.image.load(f'img/{item}.png')
+        print(f"Nouvelle arme équipée : {item}")
+        #suite du code pour ajouter l'arme au frame du personnage
+
+    def update(self):
+        # Mettre à jour l'image du joueur pour inclure l'arme s'il en a une
+        self.image = self.original_image.copy()
+        if self.arme:
+            # Positionner l'arme sur le personnage, ajustez les coordonnées selon votre besoin
+            self.image.blit(self.arme, (self.rect.width // 2 - 25, self.rect.height // 2 - 25))  
                    
 
 

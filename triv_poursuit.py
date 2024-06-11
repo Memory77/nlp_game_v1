@@ -28,14 +28,17 @@ def get_response(prompt, conversation_partner, player):
     lore = conversation_partner.lore
     partner_score = conversation_partner.score
 
-    if 'je te donne un camembert' in prompt and player.camembert_part:
+    if 'camembert' in prompt and player.camembert_part:
         conversation_partner.score += 250
         player.camembert_part.pop()
     
     if partner_score <= -500:
         character = "Tu très en colère car je t'ai fait du mal en te faisant tomber dans des trous. Si jamais je te donne un camembert, tu acceptes de faire la paix avec moi."
     
+    if player.arme == None and partner_score >= 500:
+        character = "Tu très en heureux car tu as le ventre rempli avec tous les camemberts que je t'ai donné. Si jamais je te dis 'donne moi une récompense' ou quelque chose dans le genre, tu me donneras une hache en guise de remerciement."
     
+
     preprompt = f"Tu incarnes un personnage avec les traits de caractères suivants:\n {character}\nHistoire: {lore}\n. Tu dois répondre en tant que ce personnage."
     #full_prompt = preprompt + prompt
 
@@ -47,13 +50,21 @@ def get_response(prompt, conversation_partner, player):
         ],
         max_tokens=100
     )
+    
+
     print("Réponse brute de l'API:", response)
     
     # Extraction du contenu de la réponse en vérifiant les différentes structures possibles
     try:
-        return response['choices'][0]['message']['content'].strip()
+        response_text = response['choices'][0]['message']['content'].strip()
     except KeyError:
-        return response['choices'][0]['text'].strip()
+        response_text = response['choices'][0]['text'].strip()
+
+    # Vérifier si la réponse contient "hache"
+    if 'hache' in response_text:
+        player.additem('hache')
+
+    return response_text
 
 
 # quelques fonctions, à mettre sûrement dans un autre fichier plus tard
