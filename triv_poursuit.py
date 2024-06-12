@@ -8,6 +8,12 @@ import os
 import openai
 from dotenv import load_dotenv
 
+
+def set_music(song, volume):
+    music = pygame.mixer.music.load(f"sounds/{song}")
+    pygame.mixer.music.set_volume(volume) #1.0 volume max
+    pygame.mixer.music.play(-1)
+
 # Charger les variables d'environnement à partir du fichier .env
 load_dotenv()
 
@@ -65,6 +71,7 @@ def get_response(prompt, conversation_partner, player):
         player.additem('hache')
         global etape_jeu
         etape_jeu = 1
+        set_music(music_night, 0.3)
 
     return response_text
 
@@ -114,6 +121,11 @@ def draw_dialogue_box(screen, text, x, y, width, height, color):
 
 pygame.init()
 pygame.mixer.init() 
+
+#reglage de la musique
+music_day = 'moonwalker.wav'
+music_night = 'Fort_Boyard.wav'
+set_music(music_day, 0.3)
 
 width, height = 1800, 1000
 screen = pygame.display.set_mode((width, height))
