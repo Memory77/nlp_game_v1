@@ -8,15 +8,24 @@ import os
 import openai
 from dotenv import load_dotenv
 
-def set_music(file_name, volume):
+def set_music(etape_jeu, volume):
+    if etape_jeu == 0:
+        file_name = 'song_day.wav'
+    elif etape_jeu == 1:
+        file_name = 'song_night.wav'
     music = pygame.mixer.music.load(f"sounds/{file_name}")
     pygame.mixer.music.set_volume(volume) #1.0 volume max
     pygame.mixer.music.play(-1)
 
 
-# def set_image(file_name):
-#     background_img = pygame.image.load(f'img/{file_name}')
-#     background_img = pygame.transform.scale(background_img, (game_board_width, height))
+def set_image(etape_jeu):
+    if etape_jeu == 0:
+        file_name = 'day_img.webp'
+    elif etape_jeu == 1:
+        file_name = 'night_img.webp'
+    background_img = pygame.image.load(f'img/{file_name}')
+    background_img = pygame.transform.scale(background_img, (game_board_width, height))
+    return background_img
 
 # Charger les variables d'environnement à partir du fichier .env
 load_dotenv()
@@ -93,7 +102,7 @@ def get_response(prompt, conversation_partner, player):
         player.additem('hache')
         global etape_jeu
         etape_jeu = 1
-        set_music(music_night, 0.3)
+        set_music(etape_jeu, 0.3)
 
     return response_text
 
@@ -161,7 +170,7 @@ pygame.mixer.init()
 #reglage de la musique
 music_day = 'song_day.wav'
 music_night = 'song_night.wav'
-set_music(music_day, 0.3)
+set_music(etape_jeu, 0.3)
 
 width, height = 1800, 1000
 screen = pygame.display.set_mode((width, height))
@@ -199,11 +208,6 @@ game_board_width = width - interface_width
 cell_width = game_board_width  // game.board_game_width
 cell_height = height // game.board_game_height
 
-background_day = pygame.image.load('img/day_img.webp')
-background_day = pygame.transform.scale(background_day, (game_board_width, height))
-
-background_night = pygame.image.load('img/night_img.webp')
-background_night = pygame.transform.scale(background_night, (game_board_width, height))
 
 gamer_sprites = pygame.sprite.Group()
 joueurs = []
@@ -260,8 +264,7 @@ fall_one.set_image()
 fall_two.set_position(3, 13, cell_width, cell_height)
 fall_two.set_image()
 
-ETAT_JEU = 1
-etat_jeu = ETAT_JEU
+
 current_player_index = 0
 conversation_open = False
 input_text = ""
@@ -274,10 +277,8 @@ scroll_speed = 20
 
 running = True
 while running:
-    if etape_jeu == 0:
-        screen.blit(background_day, (0, 0))
-    elif etape_jeu == 1:
-        screen.blit(background_night, (0, 0))
+    
+    screen.blit(set_image(etape_jeu), (0, 0))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
