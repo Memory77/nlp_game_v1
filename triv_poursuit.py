@@ -12,7 +12,7 @@ def set_music(etape_jeu, volume):
     if etape_jeu == 0:
         file_name = 'song_day.wav'
     elif etape_jeu == 1:
-        file_name = 'song_day.wav'
+        file_name = 'night_song.wav'
     music = pygame.mixer.music.load(f"sounds/{file_name}")
     pygame.mixer.music.set_volume(volume) #1.0 volume max
     pygame.mixer.music.play(-1)
