@@ -10,12 +10,18 @@ class Gamer(pygame.sprite.Sprite):
         self.x = x
         self.y = y
         self.camembert_part = []  # ou voir pour mettre 0 plutot
+        self.camembert_part = []  # ou voir pour mettre 0 plutot
         self.score = 0
         self.sound = []
         self.personnage = personnage
         self.current_camembert = None
         self.lore = ""
         self.caracter = ""
+        self.arme = None
+        self.set_params(personnage)
+        self.original_image = self.image.copy()
+        self.rect = self.image.get_rect(topleft=(x, y))
+
         self.arme = None
         self.set_params(personnage)
         self.original_image = self.image.copy()
@@ -32,6 +38,7 @@ class Gamer(pygame.sprite.Sprite):
         sound = pygame.mixer.Sound('sounds/step.wav')
         sound.set_volume(0.2)
         sound.play()
+
 
         if direction == "up":
             self.rect.y -= cell_height
@@ -58,11 +65,14 @@ class Gamer(pygame.sprite.Sprite):
                 self.rect.x = 0
                 self.x = 0
 
+
         # boucle déplaçant les autres joueurs
         for gamer in game.gamers:
             if self.id != gamer.id:
                 if self.rect.x == gamer.rect.x and self.rect.y == gamer.rect.y:
                     gamer.move(direction, cell_height, cell_width, game)
+
+   
 
     def set_params(self, personnage):
         self.sound = []  # Réinitialiser les sons
@@ -85,6 +95,7 @@ class Gamer(pygame.sprite.Sprite):
             self.sound.append('humain-travail.wav')
             self.sound.append('orc.wav')
             self.caracter = "brute"
+            self.lore = "Tu es un orc agressif et cruel. Tu as perdu 6 joyaux de couleurs différentes. Si tu récupères un joyau alors ton agressivité diminue légèrement. Tu ne deviens calme et gentil que si tu as tes 6 joyaux en ta possession. Après une présentation, tu proposes une quête pour l'aventurier. Tu donneras une quête par joyau, ils ont chacun une couleur : bleu, rouge, vert, violet, marron, orange. Tu portes deux grosses haches, une cuirasse en cuir et des bottes en cuir cloutées. Les joyaux sont des reliques de ton peuple déchu et vaincu par les humains. Tu as un style particulier pour parler, tu as des petits tics de langage typique des orcs. Réponds aux questions en te basant sur ce contexte."
             self.lore = "Tu es un orc agressif et cruel. Tu as perdu 6 joyaux de couleurs différentes. Si tu récupères un joyau alors ton agressivité diminue légèrement. Tu ne deviens calme et gentil que si tu as tes 6 joyaux en ta possession. Après une présentation, tu proposes une quête pour l'aventurier. Tu donneras une quête par joyau, ils ont chacun une couleur : bleu, rouge, vert, violet, marron, orange. Tu portes deux grosses haches, une cuirasse en cuir et des bottes en cuir cloutées. Les joyaux sont des reliques de ton peuple déchu et vaincu par les humains. Tu as un style particulier pour parler, tu as des petits tics de langage typique des orcs. Réponds aux questions en te basant sur ce contexte."
         elif personnage == 4:
             self.image = pygame.image.load('img/big_player_four.png')
@@ -113,6 +124,7 @@ class Gamer(pygame.sprite.Sprite):
             self.sound.append('orc.wav')
         self.original_image = self.image.copy()
 
+
     def yell(self):
         if self.score <= -500:
             sound = pygame.mixer.Sound('sounds/angry_3.wav')
@@ -122,11 +134,13 @@ class Gamer(pygame.sprite.Sprite):
         sound.set_volume(0.2)
         sound.play()
 
+
     def check_camembert(self, camembert_sprites):
         for camembert in camembert_sprites:
             if self.rect.colliderect(camembert.rect) and camembert.color not in self.camembert_part:
                 return True
         return False
+
 
     def take_camembert(self, camembert_sprites, cell_width, cell_height, game, game_board):
         for camembert in camembert_sprites:
@@ -134,6 +148,8 @@ class Gamer(pygame.sprite.Sprite):
                 self.score += game.camembert_question_points
                 camembert.kill()
                 self.camembert_part.append(camembert.color)
+
+                # generation d'un nouveau camembert aléatoirement 
 
                 # generation d'un nouveau camembert aléatoirement 
                 number_min = 0
@@ -146,21 +162,25 @@ class Gamer(pygame.sprite.Sprite):
                     x = random.randint(number_min, number_cols)
                     color_question_target = game_board[y][x]
 
+
                 new_camembert = Element(0, 0, "camembert", camembert.color)
                 new_camembert.set_position(y, x, cell_width, cell_height)
                 new_camembert.set_image()
                 camembert_sprites.add(new_camembert)
+
 
     def check_fall(self, fall_sprites, gamers_sprite, cell_width, cell_height, game):
         for fall in fall_sprites:
             for gamer in gamers_sprite:
                 if self.rect.colliderect(fall.rect):
                     # set position aléatoirement 
+                    # set position aléatoirement 
                     number_min = 0
                     number_rows = game.board_game_height - 1
                     number_cols = game.board_game_width - 1
                     y = random.randint(number_min, number_rows)
                     x = random.randint(number_min, number_cols)
+
 
                     self.set_position(y, x, cell_width, cell_height)
                     self.score += game.hole_points
@@ -168,13 +188,16 @@ class Gamer(pygame.sprite.Sprite):
                     sound_fall.set_volume(0.2)
                     sound_fall.play()
 
+
                 if gamer.rect.colliderect(fall.rect):
+                    # set position aléatoirement 
                     # set position aléatoirement 
                     number_min = 0
                     number_rows = game.board_game_height - 1
                     number_cols = game.board_game_width - 1
                     y = random.randint(number_min, number_rows)
                     x = random.randint(number_min, number_cols)
+
 
                     gamer.set_position(y, x, cell_width, cell_height)
                     gamer.score += game.hole_points

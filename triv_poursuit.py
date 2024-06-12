@@ -90,6 +90,7 @@ def get_response(prompt, conversation_partner, player):
     
     try:
         response_text = response['choices'][0]['message']['content'].strip()
+        response_text = response['choices'][0]['message']['content'].strip()
     except KeyError:
         response_text = response['choices'][0].get('text', '').strip()
 
@@ -168,8 +169,6 @@ pygame.init()
 pygame.mixer.init() 
 
 #reglage de la musique
-music_day = 'song_day.wav'
-music_night = 'song_night.wav'
 set_music(etape_jeu, 0.3)
 
 width, height = 1800, 1000
