@@ -9,6 +9,7 @@ import openai
 from dotenv import load_dotenv
 
 
+
 def set_music(song, volume):
     music = pygame.mixer.music.load(f"sounds/{song}")
     pygame.mixer.music.set_volume(volume) #1.0 volume max
@@ -32,7 +33,12 @@ openai.api_version = api_version
 global etape_jeu
 etape_jeu = 0
 
+# Initialisation de l'historique des conversations
+conversation_history = []
+
 def get_response(prompt, conversation_partner, player):
+    global conversation_history
+    
     character = conversation_partner.caracter
     lore = conversation_partner.lore
     partner_score = conversation_partner.score
@@ -45,17 +51,22 @@ def get_response(prompt, conversation_partner, player):
         character = "Tu es très en colère car je t'ai fait du mal en te faisant tomber dans des trous. Si jamais je te donne un camembert, tu acceptes de faire la paix avec moi."
     
     if player.arme == None and partner_score >= 500:
-        character = "Tu es très en heureux car tu as le ventre rempli avec tous les camemberts que je t'ai donné. Si jamais je te dis 'donne moi une récompense' ou quelque chose dans le genre, tu me donneras une hache en guise de remerciement."
+        character = "Tu es très heureux car tu as le ventre rempli avec tous les camemberts que je t'ai donnés. Si jamais je te dis 'donne-moi une récompense' ou quelque chose dans le genre, tu me donneras une hache en guise de remerciement."
     
-
     preprompt = f"Tu incarnes un personnage avec les traits de caractères suivants:\n {character}\nHistoire: {lore}\n. Tu dois répondre en tant que ce personnage."
+
+    # Ajouter le nouveau message à l'historique
+    conversation_history.append({"role": "user", "content": prompt})
+
+    # Limiter la taille de l'historique pour éviter des appels trop longs à l'API
+    if len(conversation_history) > 10:
+        conversation_history = conversation_history[-10:]
+
+    messages = [{"role": "system", "content": preprompt}] + conversation_history
 
     response = openai.ChatCompletion.create(
         engine=api_deployment,
-        messages=[
-            {"role": "system", "content": preprompt},
-            {"role": "user", "content": prompt}
-        ],
+        messages=messages,
         max_tokens=100
     )
 
@@ -64,7 +75,10 @@ def get_response(prompt, conversation_partner, player):
     try:
         response_text = response['choices'][0]['message']['content'].strip()
     except KeyError:
-        response_text = response['choices'][0]['text'].strip()
+        response_text = response['choices'][0].get('text', '').strip()
+
+    # Ajouter la réponse de l'IA à l'historique
+    conversation_history.append({"role": "assistant", "content": response_text})
 
     # Vérifier si la réponse contient "hache"
     if 'hache' in response_text:
