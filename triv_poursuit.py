@@ -8,12 +8,15 @@ import os
 import openai
 from dotenv import load_dotenv
 
-
-
-def set_music(song, volume):
-    music = pygame.mixer.music.load(f"sounds/{song}")
+def set_music(file_name, volume):
+    music = pygame.mixer.music.load(f"sounds/{file_name}")
     pygame.mixer.music.set_volume(volume) #1.0 volume max
     pygame.mixer.music.play(-1)
+
+
+# def set_image(file_name):
+#     background_img = pygame.image.load(f'img/{file_name}')
+#     background_img = pygame.transform.scale(background_img, (game_board_width, height))
 
 # Charger les variables d'environnement à partir du fichier .env
 load_dotenv()
@@ -36,14 +39,17 @@ etape_jeu = 0
 # Initialisation de l'historique des conversations
 conversation_history = []
 
+# Liste globale pour stocker les dialogues
+dialogues = []
+
 def get_response(prompt, conversation_partner, player):
-    global conversation_history
+    global conversation_history, dialogues
     
     character = conversation_partner.caracter
     lore = conversation_partner.lore
     partner_score = conversation_partner.score
 
-    if 'camembert' in prompt and player.camembert_part:
+    if ('camembert' in prompt or 'fromage' in prompt) and player.camembert_part:
         conversation_partner.score += 250
         player.camembert_part.pop()
     
@@ -52,11 +58,12 @@ def get_response(prompt, conversation_partner, player):
     
     if player.arme == None and partner_score >= 500:
         character = "Tu es très heureux car tu as le ventre rempli avec tous les camemberts que je t'ai donnés. Si jamais je te dis 'donne-moi une récompense' ou quelque chose dans le genre, tu me donneras une hache en guise de remerciement."
-    
+   
     preprompt = f"Tu incarnes un personnage avec les traits de caractères suivants:\n {character}\nHistoire: {lore}\n. Tu dois répondre en tant que ce personnage."
 
     # Ajouter le nouveau message à l'historique
     conversation_history.append({"role": "user", "content": prompt})
+    dialogues.append((player.player_name, prompt))
 
     # Limiter la taille de l'historique pour éviter des appels trop longs à l'API
     if len(conversation_history) > 10:
@@ -79,6 +86,7 @@ def get_response(prompt, conversation_partner, player):
 
     # Ajouter la réponse de l'IA à l'historique
     conversation_history.append({"role": "assistant", "content": response_text})
+    dialogues.append((conversation_partner.player_name, response_text))
 
     # Vérifier si la réponse contient "hache"
     if 'hache' in response_text:
@@ -106,39 +114,53 @@ def draw_button(screen, text, x, y, width, height, active_color, inactive_color,
     screen.blit(text_surf, text_rect)
     return False
 
-def auto_wrap(text: str, nb_characters: int) -> str:
+def auto_wrap(text: str, font, max_width: int) -> list:
     words = text.split(' ')
     wrapped_lines = []
-    
-    for word in words:
-        if len(wrapped_lines) == 0:
-            wrapped_lines.append('')
-        test_line = wrapped_lines[-1] + word + ' '
-        
-        if len(test_line) < nb_characters:
-            wrapped_lines[-1] = test_line
-        else:
-            wrapped_lines.append(word + ' ')
+    current_line = ""
 
+    for word in words:
+        test_line = current_line + word + ' '
+        if font.size(test_line)[0] <= max_width:
+            current_line = test_line
+        else:
+            wrapped_lines.append(current_line)
+            current_line = word + ' '
+
+    wrapped_lines.append(current_line)
     return wrapped_lines
 
 def are_players_adjacent(player1, player2):
     return abs(player1.x - player2.x) <= 1 and abs(player1.y - player2.y) <= 1
 
-def draw_dialogue_box(screen, text, x, y, width, height, color):
+def draw_dialogues(screen, dialogues, x, y, width, height, color, scroll_offset):
     font = pygame.font.SysFont(None, 25)
     pygame.draw.rect(screen, color, (x, y, width, height))
-    wrapped_lines = auto_wrap(text, 40)
-    for i, line in enumerate(wrapped_lines):
+    dialogue_y = y + 10 - scroll_offset  # Start position for the dialogue text with scroll offset
+    for speaker, message in dialogues:
+        wrapped_lines = auto_wrap(f"{speaker}: {message}", font, width - 20)
+        for line in wrapped_lines:
+            if dialogue_y + 20 < y + height and dialogue_y >= y:  # Check if line is within the visible area
+                text_surf = font.render(line, True, (0, 0, 0))
+                screen.blit(text_surf, (x + 10, dialogue_y))
+            dialogue_y += 20
+
+def draw_input_box(screen, input_text, x, y, width, height, color):
+    font = pygame.font.SysFont(None, 25)
+    pygame.draw.rect(screen, color, (x, y, width, height))
+    wrapped_lines = auto_wrap(input_text, font, width - 20)
+    input_y = y + 10  # Start position for the input text
+    for line in wrapped_lines:
         text_surf = font.render(line, True, (0, 0, 0))
-        screen.blit(text_surf, (x + 10, y + 10 + i * 20))
+        screen.blit(text_surf, (x + 10, input_y))
+        input_y += 20
 
 pygame.init()
 pygame.mixer.init() 
 
 #reglage de la musique
-music_day = 'moonwalker.wav'
-music_night = 'Fort_Boyard.wav'
+music_day = 'song_day.wav'
+music_night = 'song_night.wav'
 set_music(music_day, 0.3)
 
 width, height = 1800, 1000
@@ -177,11 +199,11 @@ game_board_width = width - interface_width
 cell_width = game_board_width  // game.board_game_width
 cell_height = height // game.board_game_height
 
-background_image = pygame.image.load('img/fond_test.jpg')
-background_image = pygame.transform.scale(background_image, (game_board_width, height))
+background_day = pygame.image.load('img/day_img.webp')
+background_day = pygame.transform.scale(background_day, (game_board_width, height))
 
-background_image2 = pygame.image.load('img/test_img2.jpg')
-background_image2 = pygame.transform.scale(background_image2, (game_board_width, height))
+background_night = pygame.image.load('img/night_img.webp')
+background_night = pygame.transform.scale(background_night, (game_board_width, height))
 
 gamer_sprites = pygame.sprite.Group()
 joueurs = []
@@ -246,12 +268,16 @@ input_text = ""
 chat_history_ids = None
 conversation_partner = None
 
+# Variables de défilement
+scroll_offset = 0
+scroll_speed = 20
+
 running = True
 while running:
     if etape_jeu == 0:
-        screen.blit(background_image, (0, 0))
+        screen.blit(background_day, (0, 0))
     elif etape_jeu == 1:
-        screen.blit(background_image2, (0, 0))
+        screen.blit(background_night, (0, 0))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -281,12 +307,17 @@ while running:
                 conversation_partner.yell()
                 input_text = ""
                 print(f"{conversation_partner.player_name}: {response}")
-                draw_dialogue_box(screen, response, 400, 700, 1000, 200, (255, 255, 255))
 
             elif event.key == pygame.K_BACKSPACE:
                 input_text = input_text[:-1]
             else:
                 input_text += event.unicode
+
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 4:  # Molette vers le haut
+                scroll_offset = max(scroll_offset - scroll_speed, 0)
+            elif event.button == 5:  # Molette vers le bas
+                scroll_offset += scroll_speed
 
     interface_rect = pygame.Rect(interface_x, interface_y, interface_width, interface_height)
     pygame.draw.rect(screen, interface_bg_color, interface_rect)
@@ -343,8 +374,8 @@ while running:
                         conversation_partner = gamer2 if current_player_index == i else gamer1
 
     if conversation_open:
-        draw_dialogue_box(screen, f"Conversation avec {conversation_partner.player_name}", 400, 400, 1000, 200, (255, 255, 255))
-        draw_dialogue_box(screen, input_text, 400, 620, 1000, 50, (200, 200, 200))
+        draw_dialogues(screen, dialogues, 400, 400, 1000, 200, (255, 255, 255), scroll_offset)
+        draw_input_box(screen, input_text, 400, 620, 1000, 50, (200, 200, 200))
         if draw_button(screen, "Fermer", 1300, 550, 100, 50, active_color, inactive_color, 30):
             conversation_open = False
     

@@ -72,12 +72,12 @@ class Gamer(pygame.sprite.Sprite):
             self.sound.append('deadpool.wav')
             self.sound.append('alright-already.wav')
             self.sound.append('are-you-crazy.wav')
-            self.caracter = "Deadpool"
+            self.caracter = f"Tu es Deadpool. Tu aimes bien le fromage ou le camembert"
             self.lore = ""
         elif personnage == 2:
             self.image = pygame.image.load('img/big_player_two.png')
             self.sound.append('captain_america.wav')
-            self.caracter = "Captain America"
+            self.caracter = f"Captain America. Si jamais je te demande un cadeau tu m'en donnes pas tant que ton score : {self.score} n'est pas supérieur ou égal à 500"
             self.lore = ""
         elif personnage == 3:
             self.image = pygame.image.load('img/big_player_tree.png')
@@ -185,7 +185,7 @@ class Gamer(pygame.sprite.Sprite):
     def additem(self, item):
         self.arme = pygame.image.load(f'img/{item}.png')
         print(f"Nouvelle arme équipée : {item}")
-        sound_item = pygame.mixer.Sound('sounds/yeah-boiii-i-i-i.wav')
+        sound_item = pygame.mixer.Sound('sounds/win_item.wav')
         sound_item.set_volume(0.2)
         sound_item.play()
         
