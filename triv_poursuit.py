@@ -9,22 +9,20 @@ import openai
 from dotenv import load_dotenv
 
 def set_music(etape_jeu, volume):
-    match etape_jeu:
-        case 0:
-            file_name = 'song_day.wav'
-        case 1:
-            file_name = 'night_song.wav'
+    if etape_jeu == 0:
+        file_name = 'song_day.wav'
+    elif etape_jeu == 1:
+        file_name = 'night_song.wav'
     music = pygame.mixer.music.load(f"sounds/{file_name}")
-    pygame.mixer.music.set_volume(volume) #1.0 volume max
+    pygame.mixer.music.set_volume(volume)  # 1.0 volume max
     pygame.mixer.music.play(-1)
 
 
 def set_image(etape_jeu):
-    match etape_jeu:
-        case 0:
-            file_name = 'day_img.webp'
-        case 1:
-            file_name = 'night_img.webp'
+    if etape_jeu == 0:
+        file_name = 'day_img.webp'
+    elif etape_jeu == 1:
+        file_name = 'night_img.webp'
     background_img = pygame.image.load(f'img/{file_name}')
     background_img = pygame.transform.scale(background_img, (game_board_width, height))
     return background_img
@@ -63,7 +61,10 @@ def get_response(prompt, conversation_partner, player):
     if ('camembert' in prompt or 'fromage' in prompt) and player.camembert_part:
         conversation_partner.score += 250
         player.camembert_part.pop()
-    
+        # sound_eat = pygame.mixer.Sound('sounds/eat.wav')
+        # sound_eat.set_volume(0.2)
+        # sound_eat.play()
+        
     if partner_score <= -500:
         character = "Tu es très en colère car je t'ai fait du mal en te faisant tomber dans des trous. Si jamais je te donne un camembert, tu acceptes de faire la paix avec moi."
     

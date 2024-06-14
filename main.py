@@ -23,37 +23,41 @@ end_game_max_camembert = params[11]
 
 os.system('clear')
 
-# shunter
-if True == True:
-    # nombre de joueur
-    nb_gamers = input(f"Combien de joueurs pour cette partie ? (choisir un nombre entre 2 et {max_player}) ")
+# Utilisation des valeurs par défaut pour le nombre de joueurs et le type de dé
+nb_gamers = 2  # Par défaut, deux joueurs
+dice = 4  # Par défaut, un dé de 4 faces
 
-    try:
-        nb_gamers = int(nb_gamers)
-    except:
-        print("C'est même pas un nombre ça !")
-        sys.exit()
+# # shunter
+# if True == True:
+#     # nombre de joueur
+#     nb_gamers = input(f"Combien de joueurs pour cette partie ? (choisir un nombre entre 2 et {max_player}) ")
 
-    if nb_gamers < 2 or nb_gamers > max_player:
-        print("Quel dommage de vous voir partir ainsi, en ne sachant pas répondre correctement à cette question !")
-        sys.exit()
+#     try:
+#         nb_gamers = int(nb_gamers)
+#     except:
+#         print("C'est même pas un nombre ça !")
+#         sys.exit()
 
-    # type de dé
-    dice = input(f"Quel type de dé voulez-vous utiliser ? (choisir un nombre entre {small_dice} et {big_dice}) ")
+#     if nb_gamers < 2 or nb_gamers > max_player:
+#         print("Quel dommage de vous voir partir ainsi, en ne sachant pas répondre correctement à cette question !")
+#         sys.exit()
 
-    try:
-        dice = int(dice)
-    except:
-        print("C'est même pas un nombre ça !")
-        sys.exit()
+#     # type de dé
+#     dice = input(f"Quel type de dé voulez-vous utiliser ? (choisir un nombre entre {small_dice} et {big_dice}) ")
 
-    if dice < small_dice or dice > big_dice:
-        print("Quel dommage de vous voir partir ainsi, en ne sachant pas répondre correctement à cette question !")
-        sys.exit()
-else:
-    # shunte
-    nb_gamers = 2
-    dice = 20
+#     try:
+#         dice = int(dice)
+#     except:
+#         print("C'est même pas un nombre ça !")
+#         sys.exit()
+
+#     if dice < small_dice or dice > big_dice:
+#         print("Quel dommage de vous voir partir ainsi, en ne sachant pas répondre correctement à cette question !")
+#         sys.exit()
+# else:
+#     # shunte
+#     nb_gamers = 2
+#     dice = 20
 
 game = NewGame(nb_gamers,
                dice,

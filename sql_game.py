@@ -209,44 +209,76 @@ def gamer_end_game(game_id: int, gamer_id: int, score: int, camembert: int):
 ##################################################
 ##################################################
 
+#fonction pour choisir l'id des joueurs et le personnage en input 
 
+# def gamer_choice_added(game_id: int, gamers_id: list, personnages):
+#     conn = sqlite3.connect('triv_ia_dlc.db')
+#     cur = conn.cursor()
+#     os.system('clear')
+
+#     gamers = {}
+
+#     for gamer in all_gamers(cur):
+#         if gamer[0] not in gamers_id:
+#             print(gamer)
+#             gamers[gamer[0]] = gamer[1]
+
+#     id = input("Choisir un joueur à partir de son 'id' : ")
+#     try:
+#         id = int(id)
+#     except:
+#         print("/!\ FATAL ERROR /!\ 001 : sql_game.py > choix ID joueur")
+#         sys.exit()
+    
+#     print('Quel personnage veux-tu prendre ?')
+#     for i in range(1, len(personnages)):
+#         print(i, ":", personnages[i])
+#     personnage = int(input('\n > '))
+
+#     try:
+#         personnage = int(personnage)
+#     except:
+#         print("/!\ FATAL ERROR /!\ 002 : sql_game.py > choix personnage")
+#         sys.exit()
+
+#     conn.close()
+
+#     try:
+#         link_game_gamer(game_id, id, gamers[id])
+#     except:
+#         print("/!\ FATAL ERROR /!\ 003 : sql_game.py > mauvais choix d'ID gamer. L'ID choisi n'est certainement pas dans la BDD")
+#         sys.exit()
+
+#     return id, gamers[id], personnages[personnage], personnage
+
+
+#fonction qui donne les id joueurs et personnages par defaut pour lancer direct le script
 def gamer_choice_added(game_id: int, gamers_id: list, personnages):
     conn = sqlite3.connect('triv_ia_dlc.db')
     cur = conn.cursor()
-    os.system('clear')
 
+    # Liste prédéfinie d'ID de joueurs et de personnages
+    default_choices = [(1, 2), (2, 1)]  # (gamer_id, personnage_id)
+    
     gamers = {}
 
     for gamer in all_gamers(cur):
         if gamer[0] not in gamers_id:
-            print(gamer)
             gamers[gamer[0]] = gamer[1]
 
-    id = input("Choisir un joueur à partir de son 'id' : ")
-    try:
-        id = int(id)
-    except:
-        print("/!\ FATAL ERROR /!\ 001 : sql_game.py > choix ID joueur")
-        sys.exit()
-    
-    print('Quel personnage veux-tu prendre ?')
-    for i in range(1, len(personnages)):
-        print(i, ":", personnages[i])
-    personnage = int(input('\n > '))
-
-    try:
-        personnage = int(personnage)
-    except:
-        print("/!\ FATAL ERROR /!\ 002 : sql_game.py > choix personnage")
+    if len(gamers_id) < len(default_choices):
+        id, personnage = default_choices[len(gamers_id)]
+        alias = gamers[id]
+    else:
+        print("/!\ FATAL ERROR /!\ 004 : sql_game.py > Pas assez de choix prédéfinis pour les joueurs")
         sys.exit()
 
     conn.close()
 
     try:
-        link_game_gamer(game_id, id, gamers[id])
+        link_game_gamer(game_id, id, alias)
     except:
         print("/!\ FATAL ERROR /!\ 003 : sql_game.py > mauvais choix d'ID gamer. L'ID choisi n'est certainement pas dans la BDD")
         sys.exit()
 
-    return id, gamers[id], personnages[personnage], personnage
-
+    return id, alias, personnages[personnage], personnage
