@@ -77,51 +77,52 @@ class Gamer(pygame.sprite.Sprite):
     def set_params(self, personnage):
         self.sound = []  # Réinitialiser les sons
         print(f"Définir les paramètres pour le personnage {personnage}")
-        if personnage == 1:
-            self.image = pygame.image.load('img/big_player_one.png')
-            self.sound.append('deadpool.wav')
-            self.sound.append('alright-already.wav')
-            self.sound.append('are-you-crazy.wav')
-            self.caracter = f"Tu es Deadpool. Tu aimes bien le fromage ou le camembert"
-            self.lore = ""
-        elif personnage == 2:
-            self.image = pygame.image.load('img/big_player_two.png')
-            self.sound.append('captain_america.wav')
-            self.caracter = f"Captain America. Si jamais je te demande un cadeau tu m'en donnes pas tant que ton score : {self.score} n'est pas supérieur ou égal à 500"
-            self.lore = ""
-        elif personnage == 3:
-            self.image = pygame.image.load('img/big_player_tree.png')
-            self.sound.append('work-work.wav')
-            self.sound.append('humain-travail.wav')
-            self.sound.append('orc.wav')
-            self.caracter = "brute"
-            self.lore = "Tu es un orc agressif et cruel. Tu as perdu 6 joyaux de couleurs différentes. Si tu récupères un joyau alors ton agressivité diminue légèrement. Tu ne deviens calme et gentil que si tu as tes 6 joyaux en ta possession. Après une présentation, tu proposes une quête pour l'aventurier. Tu donneras une quête par joyau, ils ont chacun une couleur : bleu, rouge, vert, violet, marron, orange. Tu portes deux grosses haches, une cuirasse en cuir et des bottes en cuir cloutées. Les joyaux sont des reliques de ton peuple déchu et vaincu par les humains. Tu as un style particulier pour parler, tu as des petits tics de langage typique des orcs. Réponds aux questions en te basant sur ce contexte."
-            self.lore = "Tu es un orc agressif et cruel. Tu as perdu 6 joyaux de couleurs différentes. Si tu récupères un joyau alors ton agressivité diminue légèrement. Tu ne deviens calme et gentil que si tu as tes 6 joyaux en ta possession. Après une présentation, tu proposes une quête pour l'aventurier. Tu donneras une quête par joyau, ils ont chacun une couleur : bleu, rouge, vert, violet, marron, orange. Tu portes deux grosses haches, une cuirasse en cuir et des bottes en cuir cloutées. Les joyaux sont des reliques de ton peuple déchu et vaincu par les humains. Tu as un style particulier pour parler, tu as des petits tics de langage typique des orcs. Réponds aux questions en te basant sur ce contexte."
-        elif personnage == 4:
-            self.image = pygame.image.load('img/big_player_four.png')
-            self.sound.append('naruto-chakra.wav')
-            self.sound.append('ha-ha.wav')
-            self.caracter = "Naruto"
-            self.lore = ""
-        elif personnage == 5:
-            self.image = pygame.image.load('img/big_player_five.png')
-            self.sound.append('naruto-chakra.wav')
-            self.sound.append('ha-ha.wav')
-        elif personnage == 6:
-            self.image = pygame.image.load('img/big_player_six.png')
-            self.sound.append('alright-we-turn-it-on-im-very-thirsty.wav')
-            self.sound.append('just-want-you.wav')
-        elif personnage == 7:
-            self.image = pygame.image.load('img/big_player_seven.png')
-            self.sound.append('dragon-spell.wav')
-        elif personnage == 8:
-            self.image = pygame.image.load('img/big_player_eight.png')
-            self.sound.append('ninja.wav')
-        else:
-            self.image = pygame.image.load('img/big_player_tree.png')
-            self.sound.append('work-work.wav')
-            self.sound.append('humain-travail.wav')
-            self.sound.append('orc.wav')
+        match personnage:
+            case 1:
+                self.image = pygame.image.load('img/big_player_one.png')
+                self.sound.append('deadpool.wav')
+                self.sound.append('alright-already.wav')
+                self.sound.append('are-you-crazy.wav')
+                self.caracter = f"Tu es Deadpool. Tu aimes bien le fromage ou le camembert"
+                self.lore = ""
+            case 2:
+                self.image = pygame.image.load('img/big_player_two.png')
+                self.sound.append('captain_america.wav')
+                self.caracter = f"Captain America. Si jamais je te demande un cadeau tu m'en donnes pas tant que ton score : {self.score} n'est pas supérieur ou égal à 500"
+                self.lore = ""
+            case 3:
+                self.image = pygame.image.load('img/big_player_tree.png')
+                self.sound.append('work-work.wav')
+                self.sound.append('humain-travail.wav')
+                self.sound.append('orc.wav')
+                self.caracter = "brute"
+                self.lore = "Tu es un orc agressif et cruel. Tu as perdu 6 joyaux de couleurs différentes. Si tu récupères un joyau alors ton agressivité diminue légèrement. Tu ne deviens calme et gentil que si tu as tes 6 joyaux en ta possession. Après une présentation, tu proposes une quête pour l'aventurier. Tu donneras une quête par joyau, ils ont chacun une couleur : bleu, rouge, vert, violet, marron, orange. Tu portes deux grosses haches, une cuirasse en cuir et des bottes en cuir cloutées. Les joyaux sont des reliques de ton peuple déchu et vaincu par les humains. Tu as un style particulier pour parler, tu as des petits tics de langage typique des orcs. Réponds aux questions en te basant sur ce contexte."
+                self.lore = "Tu es un orc agressif et cruel. Tu as perdu 6 joyaux de couleurs différentes. Si tu récupères un joyau alors ton agressivité diminue légèrement. Tu ne deviens calme et gentil que si tu as tes 6 joyaux en ta possession. Après une présentation, tu proposes une quête pour l'aventurier. Tu donneras une quête par joyau, ils ont chacun une couleur : bleu, rouge, vert, violet, marron, orange. Tu portes deux grosses haches, une cuirasse en cuir et des bottes en cuir cloutées. Les joyaux sont des reliques de ton peuple déchu et vaincu par les humains. Tu as un style particulier pour parler, tu as des petits tics de langage typique des orcs. Réponds aux questions en te basant sur ce contexte."
+            case 4:
+                self.image = pygame.image.load('img/big_player_four.png')
+                self.sound.append('naruto-chakra.wav')
+                self.sound.append('ha-ha.wav')
+                self.caracter = "Naruto"
+                self.lore = ""
+            case 5:
+                self.image = pygame.image.load('img/big_player_five.png')
+                self.sound.append('naruto-chakra.wav')
+                self.sound.append('ha-ha.wav')
+            case 6:
+                self.image = pygame.image.load('img/big_player_six.png')
+                self.sound.append('alright-we-turn-it-on-im-very-thirsty.wav')
+                self.sound.append('just-want-you.wav')
+            case  7:
+                self.image = pygame.image.load('img/big_player_seven.png')
+                self.sound.append('dragon-spell.wav')
+            case  8:
+                self.image = pygame.image.load('img/big_player_eight.png')
+                self.sound.append('ninja.wav')
+            case _:
+                self.image = pygame.image.load('img/big_player_tree.png')
+                self.sound.append('work-work.wav')
+                self.sound.append('humain-travail.wav')
+                self.sound.append('orc.wav')
         self.original_image = self.image.copy()
 
 

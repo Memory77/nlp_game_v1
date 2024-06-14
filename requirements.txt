@@ -1,6 +1,4 @@
 pygame==2.5.2
-transformers 
-torch
 pandas
-openai 
+openai==0.28
 python-dotenv
