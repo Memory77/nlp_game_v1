@@ -8,24 +8,7 @@ import os
 import openai
 from dotenv import load_dotenv
 
-def set_music(etape_jeu, volume):
-    if etape_jeu == 0:
-        file_name = 'song_day.wav'
-    elif etape_jeu == 1:
-        file_name = 'night_song.wav'
-    music = pygame.mixer.music.load(f"sounds/{file_name}")
-    pygame.mixer.music.set_volume(volume)  # 1.0 volume max
-    pygame.mixer.music.play(-1)
 
-
-def set_image(etape_jeu):
-    if etape_jeu == 0:
-        file_name = 'day_img.webp'
-    elif etape_jeu == 1:
-        file_name = 'night_img.webp'
-    background_img = pygame.image.load(f'img/{file_name}')
-    background_img = pygame.transform.scale(background_img, (game_board_width, height))
-    return background_img
 
 # Charger les variables d'environnement à partir du fichier .env
 load_dotenv()
@@ -44,6 +27,25 @@ openai.api_version = api_version
 
 global etape_jeu
 etape_jeu = 0
+
+def set_music(etape_jeu, volume):
+    if etape_jeu == 0:
+        file_name = 'song_day.wav'
+    elif etape_jeu == 1:
+        file_name = 'night_song.wav'
+    music = pygame.mixer.music.load(f"sounds/{file_name}")
+    pygame.mixer.music.set_volume(volume)  # 1.0 volume max
+    pygame.mixer.music.play(-1)
+
+
+def set_image(etape_jeu):
+    if etape_jeu == 0:
+        file_name = 'day_img.webp'
+    elif etape_jeu == 1:
+        file_name = 'night_img.webp'
+    background_img = pygame.image.load(f'img/{file_name}')
+    background_img = pygame.transform.scale(background_img, (game_board_width, height))
+    return background_img
 
 # Initialisation de l'historique des conversations
 conversation_history = []
