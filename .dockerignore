@@ -1,0 +1,25 @@
+# Ignore les fichiers et dossiers Python temporaires
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore les dossiers de configuration de l'IDE
+.vscode/
+.idea/
+
+# Ignore les fichiers et dossiers système
+.DS_Store
+Thumbs.db
+
+# Ignore les fichiers et dossiers de logs
+*.log
+
+# Ignore les dossiers de tests si non nécessaires dans le conteneur
+tests/
+
+# Ignore les fichiers de configuration locaux
+.env
+
+# Ignore l'environnement virtuel
+venv/
