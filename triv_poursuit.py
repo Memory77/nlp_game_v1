@@ -54,25 +54,29 @@ conversation_history = []
 dialogues = []
 
 def get_response(prompt, conversation_partner, player):
-    global conversation_history, dialogues
+    global conversation_history, dialogues, etape_jeu
     
     character = conversation_partner.caracter
     lore = conversation_partner.lore
     partner_score = conversation_partner.score
-
-    if ('camembert' in prompt or 'fromage' in prompt) and player.camembert_part:
-        conversation_partner.score += 250
-        player.camembert_part.pop()
-        # sound_eat = pygame.mixer.Sound('sounds/eat.wav')
-        # sound_eat.set_volume(0.2)
-        # sound_eat.play()
-        
-    if partner_score <= -500:
-        character = "Tu es très en colère car je t'ai fait du mal en te faisant tomber dans des trous. Si jamais je te donne un camembert, tu acceptes de faire la paix avec moi."
     
-    if player.arme == None and partner_score >= 500:
-        character = "Tu es très heureux car tu as le ventre rempli avec tous les camemberts que je t'ai donnés. Si jamais je te dis 'donne-moi une récompense' ou quelque chose dans le genre, tu me donneras une hache en guise de remerciement."
+
+    if partner_score <= -500:
+            character = "Tu es très en colère car je t'ai fait du mal en te faisant tomber dans des trous. Si jamais je te donne un camembert ou un fromage, tu acceptes de faire la paix avec moi et potentiellement me donner une récompense à l'avenir"
+
+    if etape_jeu == 0:
+        if ('camembert' in prompt or 'fromage' in prompt) and player.camembert_part:
+            conversation_partner.score += 250
+            player.camembert_part.pop()
+            sound_eat = pygame.mixer.Sound('sounds/eat.wav')
+            sound_eat.set_volume(0.2)
+            sound_eat.play()
+            
+        if player.arme == None and partner_score >= 250:
+            character = "Tu es très heureux car tu as le ventre rempli avec tous les camemberts que je t'ai donnés. Si jamais je te dis 'donne-moi une récompense' ou quelque chose dans le genre, tu me donneras une hache en guise de remerciement."
    
+    if etape_jeu ==1:
+        character = "Tu es effrayé car tu vois plein d'orc autour de toi !! Si on te parle tu cries !! tu oublis tout le reste sur les camemberts et tout ce qui te preoccupe en ce moment meme sont les orcs a côté de toi"
     preprompt = f"Tu incarnes un personnage avec les traits de caractères suivants:\n {character}\nHistoire: {lore}\n. Tu dois répondre en tant que ce personnage."
 
     # Ajouter le nouveau message à l'historique
@@ -104,12 +108,19 @@ def get_response(prompt, conversation_partner, player):
     dialogues.append((conversation_partner.player_name, response_text))
 
     # Vérifier si la réponse contient "hache"
-    if 'hache' in response_text:
+    if 'hache' in response_text and etape_jeu == 0:
         player.additem('hache')
-        global etape_jeu
+        
+        #passe etape_jeu a 1
         etape_jeu = 1
         set_music(etape_jeu, 0.3)
 
+        #ajout des orcs
+        for x in range(3):
+            pnj= Gamer(0, 0, 4+x, "Brute", 3)
+            gamer_sprites.add(pnj)
+            pnj.set_position(5+x, 12+x, cell_width, cell_height)
+        
     return response_text
 
 def draw_button(screen, text, x, y, width, height, active_color, inactive_color, font_size):
@@ -283,7 +294,7 @@ running = True
 while running:
     
     screen.blit(set_image(etape_jeu), (0, 0))
-
+  
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -301,10 +312,21 @@ while running:
             joueurs[current_player_index].take_camembert(camembert_sprites, cell_width, cell_height, game, game_board)
             joueurs[current_player_index].check_fall(fall_sprites, gamer_sprites, cell_width, cell_height, game)
 
+    
+
             if event.key == pygame.K_SPACE:
                 current_player_index = (current_player_index + 1) % main.nb_gamers
                 joueurs[current_player_index].yell()
                 print(f"Passage au joueur {current_player_index + 1}")
+        
+        for gamer in gamer_sprites:
+                if gamer.id == 4:
+                    pnj = gamer
+                    if joueurs[current_player_index].rect.colliderect(pnj.rect):
+                        sound_orc = pygame.mixer.Sound('sounds/orc.wav')
+                        sound_orc.set_volume(0.2)
+                        sound_orc.play()
+                        print(etape_jeu)
 
         if event.type == pygame.KEYDOWN and conversation_open:
             if event.key == pygame.K_RETURN:
@@ -384,19 +406,19 @@ while running:
         if draw_button(screen, "Fermer", 1300, 550, 100, 50, active_color, inactive_color, 30):
             conversation_open = False
     
-    winner = game.victory()
+    # winner = game.victory()
 
-    if winner is not None:
-        win_text = f"Le gagnant est {winner.player_name} avec un score de {winner.score}"
-        print(win_text)
-        draw_button(screen, win_text, 200, 200, 900, 500, inactive_color, inactive_color, 50)
-        screen.blit(winner.image, (620, 500))
-        music = pygame.mixer.music.load('sounds/Benny_Hill_Theme.wav')
-        pygame.mixer.music.set_volume(0.5)
-        pygame.mixer.music.play(-1)
-        pygame.display.flip()
-        pygame.time.delay(10000)
-        running = False
+    # if winner is not None:
+    #     win_text = f"Le gagnant est {winner.player_name} avec un score de {winner.score}"
+    #     print(win_text)
+    #     draw_button(screen, win_text, 200, 200, 900, 500, inactive_color, inactive_color, 50)
+    #     screen.blit(winner.image, (620, 500))
+    #     music = pygame.mixer.music.load('sounds/Benny_Hill_Theme.wav')
+    #     pygame.mixer.music.set_volume(0.5)
+    #     pygame.mixer.music.play(-1)
+    #     pygame.display.flip()
+    #     pygame.time.delay(10000)
+    #     running = False
     
     pygame.display.flip()
 

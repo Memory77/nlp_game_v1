@@ -84,7 +84,7 @@ class Gamer(pygame.sprite.Sprite):
             self.sound.append('alright-already.wav')
             self.sound.append('are-you-crazy.wav')
             self.caracter = f"Tu es Deadpool. Tu aimes bien le fromage ou le camembert"
-            self.lore = ""
+            self.lore = "Tu es Deadpool"
         elif personnage == 2:
             self.image = pygame.image.load('img/big_player_two.png')
             self.sound.append('captain_america.wav')
@@ -95,7 +95,7 @@ class Gamer(pygame.sprite.Sprite):
             self.sound.append('work-work.wav')
             self.sound.append('humain-travail.wav')
             self.sound.append('orc.wav')
-            self.caracter = "brute"
+            self.caracter = "orc brute"
             self.lore = "Tu es un orc agressif et cruel. Tu as perdu 6 joyaux de couleurs différentes. Si tu récupères un joyau alors ton agressivité diminue légèrement. Tu ne deviens calme et gentil que si tu as tes 6 joyaux en ta possession. Après une présentation, tu proposes une quête pour l'aventurier. Tu donneras une quête par joyau, ils ont chacun une couleur : bleu, rouge, vert, violet, marron, orange. Tu portes deux grosses haches, une cuirasse en cuir et des bottes en cuir cloutées. Les joyaux sont des reliques de ton peuple déchu et vaincu par les humains. Tu as un style particulier pour parler, tu as des petits tics de langage typique des orcs. Réponds aux questions en te basant sur ce contexte."
         elif personnage == 4:
             self.image = pygame.image.load('img/big_player_four.png')

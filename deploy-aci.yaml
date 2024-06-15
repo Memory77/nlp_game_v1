@@ -1,0 +1,38 @@
+apiVersion: '2021-07-01'
+location: francecentral
+name: pygame-game-group
+properties:
+  containers:
+  - name: pygame-game
+    properties:
+      image: memory77/nlp_game_v1:latest
+      ports:
+      - port: 8000
+        protocol: TCP
+      resources:
+        requests:
+          cpu: 2.0
+          memoryInGb: 4.0
+      environmentVariables:
+      - name: OPENAI_API_KEY
+        value: "your_openai_api_key"
+      - name: OPENAI_API_BASE
+        value: "your_openai_api_base"
+      - name: OPENAI_API_DEPLOYMENT
+        value: "your_openai_api_deployment"
+      - name: OPENAI_API_VERSION
+        value: "your_openai_api_version"
+      - name: SDL_AUDIODRIVER
+        value: "pulseaudio"
+      - name: AUDIODEV
+        value: "hw:0,0"
+      - name: PULSE_SERVER
+        value: "unix:/run/pulse/native"
+      - name: DISPLAY
+        value: ":0"
+      - name: XDG_RUNTIME_DIR
+        value: "/run/user/1000"
+  osType: Linux
+  restartPolicy: OnFailure
+tags: {}
+type: Microsoft.ContainerInstance/containerGroups
