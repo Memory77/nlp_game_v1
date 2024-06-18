@@ -219,7 +219,7 @@ class Gamer(pygame.sprite.Sprite):
 
 
 class Element(pygame.sprite.Sprite):
-    def __init__(self, x, y, name_element, color = 'yellow'):
+    def __init__(self, x, y, name_element, color = None):
         super().__init__()
         self.image = pygame.image.load('img/mini_player_one.png')
         self.rect = self.image.get_rect(topleft=(x, y))

@@ -320,13 +320,14 @@ while running:
                 print(f"Passage au joueur {current_player_index + 1}")
         
         for gamer in gamer_sprites:
-                if gamer.id == 4:
-                    pnj = gamer
-                    if joueurs[current_player_index].rect.colliderect(pnj.rect):
-                        sound_orc = pygame.mixer.Sound('sounds/orc.wav')
-                        sound_orc.set_volume(0.2)
-                        sound_orc.play()
-                        print(etape_jeu)
+            if joueurs[current_player_index].id != gamer.id and gamer.id != 2:
+                pnj = gamer
+                if joueurs[current_player_index].rect.colliderect(pnj.rect):
+                    sound_orc = pygame.mixer.Sound('sounds/orc.wav')
+                    sound_orc.set_volume(0.2)
+                    sound_orc.play()
+                    pnj.move("up", cell_height, cell_width, game)
+                    print(etape_jeu)
 
         if event.type == pygame.KEYDOWN and conversation_open:
             if event.key == pygame.K_RETURN:
