@@ -13,17 +13,13 @@ from dotenv import load_dotenv
 # Charger les variables d'environnement à partir du fichier .env
 load_dotenv()
 
-# Récupérer les valeurs des variables d'environnement
-api_key = os.getenv('openai_api_key')
-api_base = os.getenv('openai_api_key_base')
-api_deployment = os.getenv('openai_api_deployment')
-api_version = os.getenv('openai_api_version')
 
-# Configurer l'API OpenAI avec les informations d'Azure
-openai.api_key = api_key
-openai.api_base = api_base
-openai.api_type = 'azure'
-openai.api_version = api_version
+# >>> OpenAI (classique), plus d’Azure ici
+openai.api_key = os.getenv("OPENAI_API_KEY")  # mets ta clé dans .env
+
+# Optionnel: laisse-toi un modèle dans l'env
+MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")  # ou "gpt-4o", "gpt-4"
+
 
 global etape_jeu
 etape_jeu = 0
@@ -90,7 +86,7 @@ def get_response(prompt, conversation_partner, player):
     messages = [{"role": "system", "content": preprompt}] + conversation_history
 
     response = openai.ChatCompletion.create(
-        engine=api_deployment,
+        model=MODEL,
         messages=messages,
         max_tokens=100
     )
